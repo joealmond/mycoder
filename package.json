@@ -1,0 +1,35 @@
+{
+  "name": "ticket-processor",
+  "version": "1.0.0",
+  "description": "Automated ticket processing system with Kilo Code CLI, Backlog.md, and Gitea",
+  "main": "scripts/watcher.js",
+  "scripts": {
+    "start": "node scripts/start.js",
+    "watcher": "node scripts/watcher.js",
+    "create-task": "node scripts/create-task.js",
+    "install-service": "bash scripts/install-service.sh",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "automation",
+    "kilo-code",
+    "backlog",
+    "gitea",
+    "ollama",
+    "ai"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "chokidar": "^3.5.3",
+    "express": "^4.18.2",
+    "gray-matter": "^4.0.3",
+    "p-queue": "^7.4.1",
+    "simple-git": "^3.22.0",
+    "dotenv": "^16.3.1",
+    "axios": "^1.6.5"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

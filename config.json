@@ -1,0 +1,51 @@
+{
+  "ollama": {
+    "defaultModel": "ollama/deepseek-coder",
+    "availableModels": [
+      "ollama/deepseek-coder",
+      "ollama/codellama",
+      "ollama/mistral",
+      "ollama/llama2"
+    ],
+    "timeout": 300000,
+    "retryAttempts": 3,
+    "retryDelay": 5000
+  },
+  "processing": {
+    "concurrency": 1,
+    "watchDebounce": 1000,
+    "moveDelay": 500
+  },
+  "folders": {
+    "todo": "backlog/todo",
+    "doing": "backlog/doing",
+    "failed": "backlog/failed",
+    "review": "backlog/review",
+    "completed": "backlog/completed",
+    "repos": "repos"
+  },
+  "webhook": {
+    "enabled": true,
+    "port": 3001,
+    "path": "/webhook",
+    "autoMergePR": true
+  },
+  "git": {
+    "commitMessageFormat": "feat(task-{id}): {title}",
+    "branchNameFormat": "task-{id}",
+    "createPR": true,
+    "prTitle": "[Task {id}] {title}",
+    "prBody": "{description}\n\n## Acceptance Criteria\n{acceptanceCriteria}\n\n---\nProcessed by Kilo Code CLI with model: {model}",
+    "pushRetries": 3,
+    "pushRetryDelay": 2000
+  },
+  "logging": {
+    "level": "info",
+    "includeTimestamp": true,
+    "colorize": true
+  },
+  "taskIdFormat": {
+    "pattern": "task-{id}",
+    "extractRegex": "task-(\\d+)"
+  }
+}

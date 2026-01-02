@@ -1,0 +1,103 @@
+version: '3.8'
+
+services:
+  gitea:
+    image: gitea/gitea:latest
+    container_name: ticket-processor-gitea
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      - GITEA__database__DB_TYPE=postgres
+      - GITEA__database__HOST=postgres:5432
+      - GITEA__database__NAME=gitea
+      - GITEA__database__USER=gitea
+      - GITEA__database__PASSWD=gitea
+      - GITEA__security__INSTALL_LOCK=true
+      - GITEA__security__SECRET_KEY=${GITEA_SECRET_KEY:-changeme-secret-key-please}
+      - GITEA__server__DOMAIN=localhost
+      - GITEA__server__HTTP_PORT=3000
+      - GITEA__server__ROOT_URL=http://localhost:3000/
+      - GITEA__webhook__ALLOWED_HOST_LIST=*
+      - GITEA__service__DISABLE_REGISTRATION=false
+    restart: unless-stopped
+    networks:
+      - ticket-processor
+    volumes:
+      - gitea-data:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "3000:3000"
+      - "2222:22"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: ticket-processor-postgres
+    environment:
+      - POSTGRES_USER=gitea
+      - POSTGRES_PASSWORD=gitea
+      - POSTGRES_DB=gitea
+    restart: unless-stopped
+    networks:
+      - ticket-processor
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gitea"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  devcontainer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ticket-processor-app
+    environment:
+      - OLLAMA_HOST=${OLLAMA_HOST:-http://host.containers.internal:11434}
+      - GITEA_URL=http://gitea:3000
+      - GITEA_TOKEN=${GITEA_TOKEN:-}
+      - GITEA_WEBHOOK_SECRET=${GITEA_WEBHOOK_SECRET:-webhook-secret-change-me}
+      - NODE_ENV=${NODE_ENV:-production}
+    restart: unless-stopped
+    networks:
+      - ticket-processor
+    volumes:
+      - ../backlog:/workspace/backlog
+      - ../repos:/workspace/repos
+      - ../logs:/workspace/logs
+      - ../config.json:/workspace/config.json:ro
+      - ../scripts:/workspace/scripts:ro
+      - ../package.json:/workspace/package.json:ro
+      - ../package-lock.json:/workspace/package-lock.json:ro
+      - node-modules:/workspace/node_modules
+    ports:
+      - "3001:3001"  # Webhook server port
+    depends_on:
+      gitea:
+        condition: service_healthy
+    working_dir: /workspace
+    command: ["node", "scripts/watcher.js"]
+    extra_hosts:
+      - "host.containers.internal:host-gateway"
+
+networks:
+  ticket-processor:
+    driver: bridge
+
+volumes:
+  gitea-data:
+    driver: local
+  postgres-data:
+    driver: local
+  node-modules:
+    driver: local
