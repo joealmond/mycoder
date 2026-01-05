@@ -596,4 +596,4 @@ This section is reserved for improvements suggested by users. Please open an iss
 ---
 
 **Last Updated**: 2026-01-02  
-**Maintainer**: @mandulaj
+**Maintainer**: @your-username

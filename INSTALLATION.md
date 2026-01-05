@@ -16,11 +16,13 @@ This guide covers installation on both **macOS** (development) and **Linux** (pr
 ### Platform-Specific
 
 **macOS:**
+
 - Homebrew package manager
 - 8GB+ RAM recommended
 - 20GB+ free disk space
 
 **Linux:**
+
 - Ubuntu 22.04+, Fedora 38+, or equivalent
 - 16GB+ RAM recommended (32GB for GPU workloads)
 - 50GB+ free disk space
@@ -38,7 +40,20 @@ Run the installation script:
 bash install/install-macos.sh
 ```
 
+### Using OrbStack on macOS
+
+If you prefer OrbStack for containers:
+
+```bash
+brew install orbstack
+open -a OrbStack
+```
+
+- OrbStack automatically provides `/var/run/docker.sock`
+- VS Code requires no extra configuration; Docker integrations work out of the box
+
 This script will:
+
 1. ✅ Install Homebrew (if not present)
 2. ✅ Install Podman and Podman Compose
 3. ✅ Initialize Podman machine
@@ -92,6 +107,7 @@ git config --global user.email "your.email@example.com"
 ### Post-Installation
 
 1. **Copy environment file:**
+
    ```bash
    cp .env.example .env
    ```
@@ -99,11 +115,13 @@ git config --global user.email "your.email@example.com"
 2. **Edit `.env`** (optional, defaults work for local development)
 
 3. **Install Node dependencies:**
+
    ```bash
    npm install
    ```
 
 4. **Start the system:**
+
    ```bash
    node scripts/start.js
    ```
@@ -206,6 +224,7 @@ git config --global user.email "your.email@example.com"
 For GPU-accelerated Ollama on Linux with NVIDIA GPU:
 
 1. **Install NVIDIA drivers:**
+
    ```bash
    # Ubuntu/Debian
    sudo apt install nvidia-driver-535
@@ -215,6 +234,7 @@ For GPU-accelerated Ollama on Linux with NVIDIA GPU:
    ```
 
 2. **Install nvidia-container-toolkit:**
+
    ```bash
    # Ubuntu/Debian
    sudo apt install nvidia-container-toolkit
@@ -224,11 +244,13 @@ For GPU-accelerated Ollama on Linux with NVIDIA GPU:
    ```
 
 3. **Configure Podman for NVIDIA:**
+
    ```bash
    sudo nvidia-ctk runtime configure --runtime=podman
    ```
 
 4. **Verify GPU access:**
+
    ```bash
    nvidia-smi
    ```
@@ -238,16 +260,19 @@ For GPU-accelerated Ollama on Linux with NVIDIA GPU:
 ### Post-Installation
 
 1. **Copy environment file:**
+
    ```bash
    cp .env.example .env
    ```
 
 2. **Edit `.env`** if needed:
+
    ```bash
    nano .env
    ```
 
 3. **Install Node dependencies:**
+
    ```bash
    npm install
    ```
@@ -255,11 +280,13 @@ For GPU-accelerated Ollama on Linux with NVIDIA GPU:
 4. **Choose deployment method:**
 
    **Option A: Run directly**
+
    ```bash
    node scripts/start.js
    ```
 
    **Option B: Install as systemd service** (recommended)
+
    ```bash
    bash scripts/install-service.sh
    ```

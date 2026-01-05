@@ -106,15 +106,6 @@ else
     echo -e "${GREEN}✓ Kodu already installed${NC}"
 fi
 
-# Install chezmoi for dotfile management
-if ! command -v chezmoi &> /dev/null; then
-    echo -e "${YELLOW}Installing chezmoi...${NC}"
-    brew install chezmoi
-    echo -e "${GREEN}✓ chezmoi installed${NC}"
-else
-    echo -e "${GREEN}✓ chezmoi already installed${NC}"
-fi
-
 # Pull Ollama models
 echo -e "\n${BLUE}Ollama Models${NC}"
 echo -e "${YELLOW}Checking for recommended models...${NC}"
@@ -160,12 +151,10 @@ echo -e "\n${GREEN}================================${NC}"
 echo -e "${GREEN}Installation Complete!${NC}"
 echo -e "${GREEN}================================${NC}"
 echo -e "\n${BLUE}Next steps:${NC}"
-echo -e "1. Set up chezmoi dotfiles repo (optional):"
-echo -e "   ${YELLOW}chezmoi init --apply <your-repo-url>${NC}"
-echo -e "2. Review and edit ${YELLOW}.env${NC} file with your configuration"
-echo -e "3. Review ${YELLOW}config.json${NC} for model and processing settings"
-echo -e "4. Run ${YELLOW}npm install${NC} to install Node.js dependencies"
-echo -e "5. Run ${YELLOW}node scripts/start.js${NC} to start the system"
+echo -e "1. Review and edit ${YELLOW}.env${NC} file with your configuration"
+echo -e "2. Review ${YELLOW}config.json${NC} for model and processing settings"
+echo -e "3. Run ${YELLOW}npm install${NC} to install Node.js dependencies"
+echo -e "4. Run ${YELLOW}node scripts/start.js${NC} to start the system"
 echo -e "\n${BLUE}Documentation:${NC}"
 echo -e "- Installation guide: ${YELLOW}INSTALLATION.md${NC}"
 echo -e "- Configuration: ${YELLOW}CONFIG.md${NC}"

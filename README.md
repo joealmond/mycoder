@@ -49,11 +49,13 @@ Automated ticket processing system that uses **Kilo Code CLI (kodu)** with **Oll
 ### Installation
 
 **macOS:**
+
 ```bash
 bash install/install-macos.sh
 ```
 
 **Linux:**
+
 ```bash
 bash install/install-linux.sh
 ```
@@ -61,50 +63,66 @@ bash install/install-linux.sh
 ### Setup
 
 1. Copy environment configuration:
-```bash
-cp .env.example .env
-```
+
+  ```bash
+  cp .env.example .env
+  ```
 
 2. Edit `.env` with your settings (optional, defaults work for local dev)
 
 3. Review `config.json` and adjust models/settings as needed
 
 4. Start the system:
-```bash
-node scripts/start.js
-```
+
+  ```bash
+  node scripts/start.js
+  ```
 
 Or use PM2 (recommended for development):
+
 ```bash
 pm2 start ecosystem.config.js
 pm2 logs
 ```
 
 Or install as systemd service (Linux production):
+
 ```bash
 bash scripts/install-service.sh
 ```
+
+### Remote Dev Containers (VS Code)
+
+- **Mac:** Use OrbStack (Docker API compatible). Open the repo in VS Code and **Reopen in Container**.
+- **Linux:** Use Podman with `podman-docker` to provide `/var/run/docker.sock`, then reopen the folder in a dev container.
+- **Windows:** Use Rancher Desktop (or Podman in WSL2) with the Docker socket enabled, then reopen in a dev container.
+
+The dev container mounts the Docker socket and reaches Ollama on the host via `http://host.docker.internal:11434`.
 
 ## Usage
 
 ### Creating Tasks
 
 **Option 1: Interactive CLI**
+
 ```bash
 node scripts/create-task.js
 ```
 
 **Option 2: From Template**
+
 ```bash
 bash scripts/create-from-template.sh
 ```
 
 **Option 3: Bulk Import**
+
 ```bash
 node scripts/bulk-create.js tasks.json
 ```
 
 **Option 4: Backlog.md CLI**
+
 ```bash
 backlog task create "Task Title" -d "Description" --priority high
 ```
@@ -142,6 +160,7 @@ Any additional context or notes...
 ### Model Selection
 
 Specify model in task front matter:
+
 ```yaml
 model: ollama/deepseek-coder  # Default
 # or
@@ -159,6 +178,7 @@ Available models configured in `config.json`:
 ### Service Management
 
 **macOS (PM2):**
+
 ```bash
 pm2 start ecosystem.config.js      # Start
 pm2 stop ticket-processor          # Stop
@@ -168,6 +188,7 @@ pm2 monit                          # Monitor
 ```
 
 **Linux (systemd):**
+
 ```bash
 systemctl --user start ticket-processor      # Start
 systemctl --user stop ticket-processor       # Stop
@@ -177,6 +198,7 @@ journalctl --user -u ticket-processor -f     # Follow logs
 ```
 
 **Cross-platform helper scripts:**
+
 ```bash
 bash scripts/service-start.sh
 bash scripts/service-stop.sh
