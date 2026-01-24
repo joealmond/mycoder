@@ -3,31 +3,39 @@
   "dockerFile": "./Dockerfile",
   "context": "..",
   "remoteUser": "node",
+  
+  // Podman compatibility
   "runArgs": [
-    "--add-host", "host.docker.internal:host-gateway",
-    "-v", "/var/run/docker.sock:/var/run/docker.sock"
+    "--userns=keep-id",
+    "--add-host=host.containers.internal:host-gateway",
+    "--security-opt=label=disable"
   ],
+  
   "mounts": [
     "type=volume,source=ticket-processor-npm-cache,target=/home/node/.npm"
   ],
+  
   "forwardPorts": [3000, 3001],
   "postCreateCommand": "bash .devcontainer/setup-tools.sh",
-  "remoteEnv": {
-    "CHEZMOI_REPO": "your-gitea-url/dotfiles.git"
-  },
+  
   "containerEnv": {
-    "OLLAMA_HOST": "http://host.docker.internal:11434"
+    "OLLAMA_HOST": "http://host.containers.internal:11434",
+    "OLLAMA_API_BASE": "http://host.containers.internal:11434"
   },
+  
   "customizations": {
     "vscode": {
       "settings": {
         "terminal.integrated.defaultProfile.linux": "bash",
-        "files.eol": "\n"
+        "files.eol": "\n",
+        "dev.containers.dockerPath": "podman"
       },
       "extensions": [
         "ms-azuretools.vscode-docker",
         "github.vscode-pull-request-github",
-        "dbaeumer.vscode-eslint"
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss"
       ]
     }
   }

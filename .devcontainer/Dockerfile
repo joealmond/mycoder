@@ -1,18 +1,9 @@
-FROM node:20-bookworm
+FROM node:24-bookworm
 
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends \
-    git \
-    curl \
-    ca-certificates \
-    bash \
-    openssh-client \
-  && rm -rf /var/lib/apt/lists/*
+# The base image already has git, curl, ca-certificates, bash
+# Skip apt-get to avoid GPG issues with Podman overlay on NTFS
 
+# Create workspace directory
 WORKDIR /workspace
-
-COPY package*.json ./
-
-RUN npm install
 
 CMD ["bash"]

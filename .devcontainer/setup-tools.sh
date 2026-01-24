@@ -8,33 +8,6 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
-# Set default CHEZMOI_REPO if not provided
-CHEZMOI_REPO=${CHEZMOI_REPO:-"https://github.com/your-user/dotfiles.git"}
-
-# Install chezmoi for dotfile management
-if ! command_exists chezmoi; then
-    echo "📦 Installing chezmoi..."
-    sh -c "$(curl -fsLS https://chezmoi.io/get)" -- -b /usr/local/bin
-else
-    echo "✅ chezmoi already installed"
-fi
-
-# Initialize chezmoi and apply dotfiles
-echo "🔍 Applying dotfiles from $CHEZMOI_REPO..."
-if [ -n "$CHEZMOI_REPO" ] && [ "$CHEZMOI_REPO" != "https://github.com/your-user/dotfiles.git" ]; then
-    chezmoi init --apply "$CHEZMOI_REPO" || echo "⚠️  chezmoi init failed (repo may not exist yet)"
-else
-    echo "⚠️  CHEZMOI_REPO not configured, skipping dotfile sync"
-fi
-
-# Install Ollama CLI (client only, server runs on host)
-if ! command_exists ollama; then
-    echo "📦 Installing Ollama CLI..."
-    curl -fsSL https://ollama.com/install.sh | sh
-else
-    echo "✅ Ollama CLI already installed"
-fi
-
 # Install PM2 globally
 if ! command_exists pm2; then
     echo "📦 Installing PM2..."
@@ -61,11 +34,15 @@ fi
 
 # Verify Ollama connection to host
 echo "🔍 Checking Ollama connection..."
-if curl -s "${OLLAMA_HOST:-http://host.docker.internal:11434}/api/tags" >/dev/null 2>&1; then
-    echo "✅ Ollama host reachable at ${OLLAMA_HOST:-http://host.docker.internal:11434}"
+OLLAMA_URL="${OLLAMA_HOST:-http://host.containers.internal:11434}"
+if curl -s "${OLLAMA_URL}/api/tags" >/dev/null 2>&1; then
+    echo "✅ Ollama host reachable at ${OLLAMA_URL}"
+    echo "   Available models:"
+    curl -s "${OLLAMA_URL}/api/tags" | jq -r '.models[].name' 2>/dev/null || echo "   (none yet - run 'ollama pull <model>' on host)"
 else
-    echo "⚠️  Warning: Cannot reach Ollama at ${OLLAMA_HOST:-http://host.docker.internal:11434}"
+    echo "⚠️  Warning: Cannot reach Ollama at ${OLLAMA_URL}"
     echo "   Make sure Ollama is running on your host machine"
+    echo "   Host should have: OLLAMA_HOST=0.0.0.0:11434"
 fi
 
 # Install project dependencies
@@ -74,4 +51,11 @@ if [ -f "package.json" ]; then
     npm install
 fi
 
+echo ""
 echo "✅ Tool setup complete!"
+echo ""
+echo "📋 Quick start:"
+echo "   - Run watcher:     npm start"
+echo "   - Create task:     npm run create-task"
+echo "   - Test kodu:       kodu --help"
+echo ""
